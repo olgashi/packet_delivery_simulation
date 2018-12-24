@@ -20,13 +20,14 @@ class Internet:
 
 	def delete_packet(self):
 		'''Need to change it, so it completely clears value'''
-		del self.packet[:]
+		self.packet = []
 
 	def send_packet(self, pc1, pc2):
 		if len(pc2.packet)>0:
 			pc2.packet.append(pc1.packet)
 		else:
 			pc2.packet = pc1.packet
+		print(f'Sending....a new packet:{pc2.packet} to {pc2.name}......')
 		pc1.delete_packet()
 
 class Computer(Internet):
@@ -46,7 +47,7 @@ class Computer(Internet):
 
   	def create_packet(self):
   		if not self.packet==None:
-  			new_packet = random.sample(range(100), 3)
+  			new_packet = random.sample(range(0, 101), 3)
   			self.packet.append(new_packet)
   		else:
   			self.packet = random.sample(range(100), 3)
@@ -54,11 +55,10 @@ class Computer(Internet):
 
   	def read_packet(self):
   		'''Checks if there is a packet. If there is prints it and then deletes it'''
-  		if self.check_packet():
+  		if self.packet:
   			print(f'{self.name} - Reading packet...... Packet found: {self.packet}')
   			self.packets_received += 1
   			self.delete_packet()
-  			print(f'{self.name} - Packet has been deleted.')
   		else:
   			print(f'{self.name} - Reading packet...... Packet found: {self.packet}')
 
@@ -71,14 +71,16 @@ i = 1
 while i <= 10:
 	if i%2==0:
 		alice.create_packet()
-	'''If alice has a packet, it gets sent to bob'''
-	if alice.check_packet():
+		'''If alice has a packet, it gets sent to bob'''
+		print('\n')
+	if alice.packet:
 		print(f'Alice has a packet ready: {alice.packet}')
 		network.send_packet(alice, bob)
-
+		print('\n')
 	'''If bob has a packet, he reads it and then deletes it.'''
 	if i%3==0:
 		bob.read_packet()
+		print('\n')
 	i+=1
 
 print(f'Alice created {alice.packets_created} packets.' )
